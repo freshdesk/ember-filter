@@ -1,0 +1,19 @@
+<form {{action 'customSearch' type payload on='submit'}}>
+  {{#each-in filter.filterOptions as |key value|}}
+    {{#if value.componentTemplate}}
+      {{component value.componentTemplate
+         filter=filter
+         options=value
+         key=key}}
+    {{else}}
+      {{value.label}}
+      <div>
+        {{ember-filter-form-element
+          filter=filter
+          options=value
+          key=key}}
+      </div>
+    {{/if}}
+  {{/each-in}}
+  <button type="submit">{{t 'search'}}</button>
+</form>

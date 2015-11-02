@@ -1,0 +1,20 @@
+{{#if selectize}}
+  {{ember-selectize
+      content=choices
+      optionValuePath='content.id'
+      optionLabelPath='content.name'
+      selection=value
+      add-item='filterChanged'
+      remove-item='filterChanged'
+      multiple=multiple}}
+{{else if dropdown}}
+  <select onchange={{action 'selectValue'}} multiple={{multiple}}>
+  {{#each choices as |choice|}}
+    <option value={{choice.id}} >{{choice.name}}</option>
+  {{/each}}
+  </select>
+{{else if checkbox}}
+  {{input type='checkbox' checked=value}}
+{{else if text}}
+  {{input type='text' value=value }}
+{{/if}}
