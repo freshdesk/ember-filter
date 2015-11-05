@@ -1,25 +1,33 @@
 import Ember from 'ember';
-const { computed, get } = Ember;
+const { computed, get, set } = Ember;
 
 export default Ember.Mixin.create({
   //To check the status of filter
   queryModified: false,
 
+
+  discard(){
+    set(this, 'queryModified', false);
+    this.notifyPropertyChange('normalizedQuery');
+  },
+
   //converting the query_hash to normalized hash
-  normalizedQuery: computed('query_hash',function(){
-    let $this = this,
-      normalizedHash = Ember.Object.create({}),
-      filterOptions = get(this, 'filterOptions');
-    Ember.assert("Embedded filter expects filterOptions property object (in " + this + ")", Ember.isPresent(filterOptions));
-    Object.keys(filterOptions).forEach(function(key){
-      let operator = filterOptions[key].operator,
-        value = $this.getValueFor(key);
-      normalizedHash[key] = {
-        operator: operator,
-        value: value
-      };
-    });
-    return normalizedHash;
+  normalizedQuery: computed('query_hash', {
+    get(key){
+      let $this = this,
+        normalizedHash = Ember.Object.create({}),
+        filterOptions = get(this, 'filterOptions');
+      Ember.assert("Embedded filter expects filterOptions property object (in " + this + ")", Ember.isPresent(filterOptions));
+      Object.keys(filterOptions).forEach(function(key){
+        let operator = filterOptions[key].operator,
+          value = $this.getValueFor(key);
+        normalizedHash[key] = {
+          operator: operator,
+          value: value
+        };
+      });
+      return normalizedHash;
+    }
   }),
 
   filterAttribute: function(key){
@@ -64,7 +72,7 @@ export default Ember.Mixin.create({
     let value = object.value;
     switch(object.operator) {
       case 'is_in':
-        value = object.value.split();
+        value = object.value.split(',');
         break;
       default :
         value = object.value;

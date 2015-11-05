@@ -30,7 +30,7 @@ export default Ember.Component.extend({
     var options = get(this, 'options');
     return  get(options, 'choices') || get(filter, this.contentMethod(key));
   }),
-  value: computed({
+  value: computed('filter.normalizedQuery',{
     get: function(){
       var filter = get(this, 'filter');
       var key = get(this, 'key');
