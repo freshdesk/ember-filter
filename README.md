@@ -36,6 +36,18 @@ Statuses: computed(function(){
 })
 ```
 
+## Configuration
+
+Ember Filter is configured via the `'ember-filter'` section in the
+application's `config/environment.js` file, e.g.:
+
+```js
+ENV['ember-filter'] = {
+  filterUrlNamespace: 'filters',
+  filterModelEndsWith: '-filter'
+};
+```
+
 
 ## TODOs
 

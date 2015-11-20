@@ -3,11 +3,16 @@ const { computed, get, set } = Ember;
 
 export default Ember.Mixin.create({
   //To check the status of filter
-  queryModified: false,
+  queryModified: computed('modifiedQuery', function(){
+    return !!this.get('modifiedQuery');
+  }),
 
+  modifiedQuery: null,
 
   discard(){
     set(this, 'queryModified', false);
+    set(this, 'modifiedQuery', null);
+    this.store.updateStore(this.id, this._internalModel.modelName, null);
     this.notifyPropertyChange('normalizedQuery');
   },
 
@@ -35,8 +40,12 @@ export default Ember.Mixin.create({
   },
 
   getValueFor: function(key){
-    let attribute = this.filterAttribute(key),
-      selectedVal = get(this,'query_hash').filterBy('condition',attribute);
+    let attribute = this.filterAttribute(key);
+    let selectedVal = get(this,'query_hash').filterBy('condition',attribute);
+    let modifiedQuery = get(this, 'modifiedQuery');
+    if(modifiedQuery){
+      selectedVal = modifiedQuery.filterBy('condition',attribute);
+    }
     return Ember.isPresent(selectedVal) ? this.normalizedValue(selectedVal[0], key) : [];
   },
 

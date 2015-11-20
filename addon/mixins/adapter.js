@@ -1,7 +1,7 @@
 import Ember from 'ember';
+import Configuration from './../configuration';
 
 export default Ember.Mixin.create({
-  defaultFilterNS: 'filters',
 
   /**
     Called by the store in order to fetch a JSON array for all
@@ -18,7 +18,7 @@ export default Ember.Mixin.create({
   filter: function(store, type, filterId, query_hash){
     var modelName = type.modelName;
     var url = this.buildURL(modelName, null, null, 'findAll');
-    var filterNamespace = this.get('defaultFilterNS');
+    var filterNamespace = Configuration.filterUrlNamespace;
     var filterClass = store.filterFor(modelName);
     var filter = store.peekRecord(filterClass.modelName, filterId);
     if(query_hash){

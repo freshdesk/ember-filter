@@ -1,17 +1,23 @@
 import Ember from 'ember';
 import layout from '../templates/components/ember-filter-form';
-const { get } = Ember;
+const { get, observer } = Ember;
 
 export default Ember.Component.extend({
   layout: layout,
+  _updateContent(){
+    let $this = this;
+    let store = get(this.parentView, 'store');
+    let filter = this.get('filter');
+    let type = this.get('type');
+    let payload = this.get('payload');
+    return store.filter(type, filter.id).then(function(items){
+      $this.parentView.set(payload, items);
+    });
+  },
+
   actions: {
-    customSearch: function(type, payload){
-      let $this = this,
-          store = get(this.parentView, 'store'),
-          filter = this.get('filter');
-      return store.filter(type, filter.id).then(function(items){
-        $this.parentView.set(payload, items);
-      });
+    customSearch: function(){
+      this._updateContent();
     }
   }
 });

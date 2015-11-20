@@ -31,13 +31,13 @@ export default Ember.Component.extend({
     return  get(options, 'choices') || get(filter, this.contentMethod(key));
   }),
   value: computed('filter.normalizedQuery',{
-    get: function(){
+    get(){
       var filter = get(this, 'filter');
       var key = get(this, 'key');
       var options = get(this, 'options');
       return get(filter, 'normalizedQuery.'+key+'.value');
     },
-    set: function(key, value){
+    set(key, value){
       var filter = get(this, 'filter');
       var key = get(this, 'key');
       var options = get(this, 'options');

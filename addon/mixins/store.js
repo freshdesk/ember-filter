@@ -1,12 +1,22 @@
 import Ember from 'ember';
+import Configuration from './../configuration';
 import DS from 'ember-data';
 const { PromiseArray } = DS;
 const { Promise } = Ember.RSVP;
-const { get } = Ember;
+const { get, computed } = Ember;
 
 export default Ember.Mixin.create({
 
-  defaultFilterNS: '-filter',
+
+  /**
+    The filter store.
+    @property filterStore
+    @type BaseStore
+    @readOnly
+    @default null
+    @public
+  */
+  filterStore: null,
 
   /**
     `findAll` ask the adapter's `findAll` method to find the records
@@ -27,7 +37,7 @@ export default Ember.Mixin.create({
     @param {Object} options
     @return {DS.AdapterPopulatedRecordArray}
   */
-  filter: function(modelName, filterId, options) {
+  filter(modelName, filterId, options) {
     Ember.assert('Passing classes to store methods has been removed. Please pass a dasherized string instead of '+ Ember.inspect(modelName), typeof modelName === 'string');
     var typeClass = this.modelFor(modelName);
 
@@ -42,8 +52,8 @@ export default Ember.Mixin.create({
     @param {String} modelName
     @return {DS.Model}
   */
-  filterFor: function(modelName){
-    var filter = get(this, 'defaultFilterNS');
+  filterFor(modelName){
+    var filter = Configuration.filterModelEndsWith;;
     Ember.assert('Passing classes to store methods has been removed. Please pass a dasherized string instead of '+ Ember.inspect(modelName), typeof modelName === 'string');
     var factory = this.modelFactoryFor(modelName+filter);
     if (!factory) {
@@ -55,28 +65,43 @@ export default Ember.Mixin.create({
   },
 
   /**
+    @method restoreFilter
+    @param {String} modelName
+    @return {Object}
+  */
+
+  restoreFilter(modelName){
+    var filterClass = this.filterFor(modelName);
+    return this.filterStore.restoreFor(filterClass.modelName);
+  },
+
+  /**
     @method _filter
     @private
     @param {DS.Model} typeClass
     @param {Object} options
     @return {Promise} promise
   */
-  _filter: function(typeClass, filterId, options){
+  _filter(typeClass, filterId, options){
     options = options || {};
     var adapter = this.adapterFor(typeClass.modelName);
-    var sinceToken = this.typeMapFor(typeClass).metadata.since;
     var filterClass = this.filterFor(typeClass.modelName);
+    var queryHash = null;
     Ember.assert("You tried to filter all records but you have no adapter (for " + typeClass + ")", adapter);
     Ember.assert("You tried to filter all records but your adapter does not implement `filter`", typeof adapter.filter === 'function');
     Ember.assert("You tried to filter all records but you have no filter (for " + typeClass + ")", filterClass);
     var filter = this.peekRecord(filterClass.modelName, filterId);
+    var filterContent = this.restoreFilter(typeClass.modelName);
+    if(filterContent && !!filterContent['query_hash']){
+      queryHash = filterContent['query_hash'];
+      filter.set('modifiedQuery', queryHash);
+      filter.set('queryModified', true);
+    }
     if(filter && filter.get('queryModified')){
-      return PromiseArray.create({
-        promise: Promise.resolve(this._filterAll(adapter, null, typeClass, filter.serializedQuery(), options))
-      });
+      queryHash = filter.serializedQuery();
     }
     return PromiseArray.create({
-      promise: Promise.resolve(this._filterAll(adapter, filterId, typeClass, null, options))
+      promise: Promise.resolve(this._filterAll(adapter, filterId, typeClass, queryHash, options))
     });
   },
 
@@ -89,14 +114,17 @@ export default Ember.Mixin.create({
     @param {Object} options
     @return {Promise} promise
   */
-  _filterAll: function(adapter, filterId, typeClass, query_hash, options){
+  _filterAll(adapter, filterId, typeClass, query_hash, options){
     var $this = this;
     var modelName = typeClass.modelName;
     var promise = adapter.filter(this, typeClass, filterId, query_hash);
     var serializer = this.serializerFor(modelName);
     var label = "DS: Handle Adapter#filter of " + typeClass;
+    var filterModelName = this.filterFor(modelName).modelName;
 
     promise = Promise.resolve(promise, label);
+
+    this.updateStore(filterId, filterModelName, query_hash);
 
     return promise.then(function(adapterPayload) {
       return $this._adapterRun(function() {
@@ -106,5 +134,16 @@ export default Ember.Mixin.create({
         return $this.push(data);
       });
     }, null, "DS: Extract payload of filter " + typeClass);
+  },
+
+  /**
+    @method updateStore
+    @private
+    @param {Number} filterId
+    @param {String} modelName
+    @param {Object} query_hash
+  */
+  updateStore(filterId, filterModelName, query_hash){
+    this.filterStore.persist(filterModelName, {id: filterId, query_hash: query_hash});
   }
 });
