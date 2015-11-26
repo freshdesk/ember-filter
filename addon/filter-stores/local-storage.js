@@ -80,8 +80,11 @@ export default BaseStore.extend({
     @method clear
     @public
   */
-  clear() {
-    localStorage.removeItem(this.key);
+  clear(filterClass) {
+    let content = this.restoreFor(filterClass);
+    content[filterClass] = null;
+    content = JSON.stringify(content || {});
+    localStorage.setItem(this.key, content);
     this._lastData = {};
   },
 

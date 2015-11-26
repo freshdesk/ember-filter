@@ -144,6 +144,6 @@ export default Base.extend({
     @public
   */
   clear() {
-    this.get('_store').clear();
+    this.get('_store').clear(...arguments);
   }
 });

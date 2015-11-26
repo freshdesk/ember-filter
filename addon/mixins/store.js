@@ -117,7 +117,7 @@ export default Ember.Mixin.create({
   _filterAll(adapter, filterId, typeClass, query_hash, options){
     var $this = this;
     var modelName = typeClass.modelName;
-    var promise = adapter.filter(this, typeClass, filterId, query_hash);
+    var promise = adapter.filter(this, typeClass, filterId, query_hash, options);
     var serializer = this.serializerFor(modelName);
     var label = "DS: Handle Adapter#filter of " + typeClass;
     var filterModelName = this.filterFor(modelName).modelName;

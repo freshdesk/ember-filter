@@ -10,7 +10,8 @@ export default Ember.Component.extend({
     let filter = this.get('filter');
     let type = this.get('type');
     let payload = this.get('payload');
-    return store.filter(type, filter.id).then(function(items){
+    let filterOptions = this.get('filterOptions');
+    return store.filter(type, filter.id, filterOptions).then(function(items){
       $this.parentView.set(payload, items);
     });
   },

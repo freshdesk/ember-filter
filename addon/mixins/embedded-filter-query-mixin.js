@@ -16,6 +16,10 @@ export default Ember.Mixin.create({
     this.notifyPropertyChange('normalizedQuery');
   },
 
+  clearFilterStore(){
+    this.store.filterStore.clear(this._internalModel.modelName)
+  },
+
   //converting the query_hash to normalized hash
   normalizedQuery: computed('query_hash', {
     get(key){

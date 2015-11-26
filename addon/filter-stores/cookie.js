@@ -131,8 +131,11 @@ export default BaseStore.extend({
     @method clear
     @public
   */
-  clear() {
-    this._write(null, 0);
+  clear(filterClass) {
+    let content = this.restoreFor(filterClass);
+    content[filterClass] = null;
+    content = JSON.stringify(content || {});
+    this._write(content, 0);
     this._lastData = {};
   },
 

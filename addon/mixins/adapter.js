@@ -15,19 +15,16 @@ export default Ember.Mixin.create({
     @param {Object} query_hash
     @return {Promise} promise
   */
-  filter: function(store, type, filterId, query_hash){
+  filter: function(store, type, filterId, query_hash, options){
     var modelName = type.modelName;
-    var url = this.buildURL(modelName, null, null, 'findAll');
+    var url = this.buildURL(modelName, null, null, 'findAll', query_hash);
     var filterNamespace = Configuration.filterUrlNamespace;
-    var filterClass = store.filterFor(modelName);
-    var filter = store.peekRecord(filterClass.modelName, filterId);
+    var data = Ember.copy(options.queryParams, true) || {};
+    data['filter_id'] = filterId;
     if(query_hash){
-      return this.ajax(url+'/'+filterNamespace, 'POST', { data: { query_hash: query_hash } });
+      data['query_hash'] = query_hash;
     }
-    else {
-      return this.ajax(url+'/'+filterNamespace+'/'+filterId,'GET');
-    }
-
+    return this.ajax(url, 'GET', { data: data });
   },
   /**
     Called by the store in order to fetch a JSON array filter response.
