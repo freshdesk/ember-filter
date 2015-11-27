@@ -1,7 +1,6 @@
 import DS from 'ember-data';
 import StoreMixin from 'ember-filter/mixins/store';
 import AdapterMixin from 'ember-filter/mixins/adapter';
-import Cookie from '../filter-stores/cookie';
 const{ Adapter } = DS;
 
 export function initialize({ application, container }) {

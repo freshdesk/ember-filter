@@ -3,7 +3,6 @@ import Configuration from './../configuration';
 import DS from 'ember-data';
 const { PromiseArray } = DS;
 const { Promise } = Ember.RSVP;
-const { get, computed } = Ember;
 
 export default Ember.Mixin.create({
 
@@ -53,7 +52,7 @@ export default Ember.Mixin.create({
     @return {DS.Model}
   */
   filterFor(modelName){
-    var filter = Configuration.filterModelEndsWith;;
+    var filter = Configuration.filterModelEndsWith;
     Ember.assert('Passing classes to store methods has been removed. Please pass a dasherized string instead of '+ Ember.inspect(modelName), typeof modelName === 'string');
     var factory = this.modelFactoryFor(modelName+filter);
     if (!factory) {

@@ -18,7 +18,6 @@ export default Ember.Mixin.create({
   filter: function(store, type, filterId, query_hash, options){
     var modelName = type.modelName;
     var url = this.buildURL(modelName, null, null, 'findAll', query_hash);
-    var filterNamespace = Configuration.filterUrlNamespace;
     var data = Ember.copy(options.queryParams, true) || {};
     data['filter_id'] = filterId;
     if(query_hash){

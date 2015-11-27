@@ -34,14 +34,12 @@ export default Ember.Component.extend({
     get(){
       var filter = get(this, 'filter');
       var key = get(this, 'key');
-      var options = get(this, 'options');
       return get(filter, 'normalizedQuery.'+key+'.value');
     },
     set(key, value){
       var filter = get(this, 'filter');
-      var key = get(this, 'key');
-      var options = get(this, 'options');
-      return set(filter, 'normalizedQuery.'+key+'.value', value);
+      var queryKey = get(this, 'key');
+      return set(filter, 'normalizedQuery.'+queryKey+'.value', value);
     }
   }),
   contentMethod: function(key){

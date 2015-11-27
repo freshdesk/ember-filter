@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/ember-filter-form';
-const { get, observer } = Ember;
+const { get } = Ember;
 
 export default Ember.Component.extend({
   layout: layout,

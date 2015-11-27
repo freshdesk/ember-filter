@@ -17,12 +17,12 @@ export default Ember.Mixin.create({
   },
 
   clearFilterStore(){
-    this.store.filterStore.clear(this._internalModel.modelName)
+    this.store.filterStore.clear(this._internalModel.modelName);
   },
 
   //converting the query_hash to normalized hash
   normalizedQuery: computed('query_hash', {
-    get(key){
+    get(){
       let $this = this,
         normalizedHash = Ember.Object.create({}),
         filterOptions = get(this, 'filterOptions');
@@ -56,8 +56,7 @@ export default Ember.Mixin.create({
   serializedQuery: function(){
     let $this = this,
         normalizedQuery = get(this, 'normalizedQuery'),
-        serializedQuery = [],
-        filterOptions = get(this, 'filterOptions');
+        serializedQuery = [];
     Object.keys(normalizedQuery).forEach(function(key){
       let value = $this.serializeValue(normalizedQuery[key]),
         condition = $this.filterAttribute(key);
