@@ -58,7 +58,8 @@ export default Ember.Mixin.create({
     if (!factory) {
       throw new Ember.Error("No filter was found for '" + modelName + "'");
     }
-    factory.modelName = factory.modelName || normalizeModelName(modelName);
+
+    factory.modelName = factory.modelName || DS.normalizeModelName(modelName+filter);
 
     return factory;
   },
