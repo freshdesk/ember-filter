@@ -1,9 +1,11 @@
 import Ember from 'ember';
 import layout from '../templates/components/ember-filter-form-element';
-const { computed, get, set  } = Ember;
+const { computed, get, set, isEmpty  } = Ember;
 
 export default Ember.Component.extend({
   layout: layout,
+  classNames: ['filter-form-field'],
+
   selectize: computed(function(){
     var options = get(this, 'options');
     return options.type === 'selectize';

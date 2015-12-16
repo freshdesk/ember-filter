@@ -53,5 +53,5 @@ ENV['ember-filter'] = {
 * Test cases
 * Pagination
 * Searchable filter elements
-* Show filter elements when there is value associated.
+* ~~Show filter elements when there is value associated~~.
 * Support more options for form filters

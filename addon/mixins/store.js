@@ -92,7 +92,7 @@ export default Ember.Mixin.create({
     Ember.assert("You tried to filter all records but you have no filter (for " + typeClass + ")", filterClass);
     var filter = this.peekRecord(filterClass.modelName, filterId);
     var filterContent = this.restoreFilter(typeClass.modelName);
-    if(filterContent && !!filterContent['query_hash']){
+    if(filterContent && !!filterContent['query_hash'] && filterContent.id === filterId){
       queryHash = filterContent['query_hash'];
       filter.set('modifiedQuery', queryHash);
       filter.set('queryModified', true);

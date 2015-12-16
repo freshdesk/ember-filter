@@ -1,19 +1,34 @@
-<form {{action 'customSearch' type payload on='submit'}}>
-  {{#each-in filter.filterOptions as |key value|}}
+<form class="filter-form" {{action 'customSearch' type payload on='submit'}}>
+  {{#each-in visibleFilterOptions as |key value|}}
     {{#if value.componentTemplate}}
       {{component value.componentTemplate
          filter=filter
          options=value
          key=key}}
     {{else}}
-      {{value.label}}
-      <div>
         {{ember-filter-form-element
           filter=filter
           options=value
           key=key}}
-      </div>
     {{/if}}
   {{/each-in}}
-  <button type="submit">{{t 'search'}}</button>
+  <div>
+    {{#if hasMoreElements}}
+      {{#bs-dropdown}}
+        {{#bs-dropdown-toggle}}
+          <i class="icon-ellipsis"></i>
+        {{/bs-dropdown-toggle}}
+        {{#bs-dropdown-menu}}
+          {{#each-in nonVisibleOptions as |key value|}}
+            <li>
+              <a href='#' {{action "showField" key}}> {{value.label}} </a>
+            </li>
+          {{/each-in}}
+        {{/bs-dropdown-menu}}
+      {{/bs-dropdown}}
+    {{/if}}
+  </div>
+  <div class="filter-footer">
+    <button class="btn btn-default btn-sm" type="submit">{{t 'search'}}</button>
+  </div>
 </form>
