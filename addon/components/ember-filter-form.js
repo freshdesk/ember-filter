@@ -44,20 +44,9 @@ export default Ember.Component.extend({
     return this.get('filter.filterOptions.'+key);
   },
 
-  _updateContent(){
-    let $this = this;
-    let store = get(this.parentView, 'store');
-    let filter = this.get('filter');
-    let type = this.get('type');
-    let payload = this.get('payload');
-    let queryOptions = this.get('queryOptions');
-    return store.filter(type, filter.id, queryOptions).then(function(items){
-      $this.parentView.set(payload, items);
-    });
-  },
   actions: {
     customSearch: function(){
-      this._updateContent();
+      this.sendAction('action');
     },
     showField(key){
       var visibleFilterOptions = this.get('visibleFilterOptions');

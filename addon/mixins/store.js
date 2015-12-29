@@ -88,7 +88,6 @@ export default Ember.Mixin.create({
     var filterClass = this.filterFor(typeClass.modelName);
     var queryHash = null;
     Ember.assert("You tried to filter all records but you have no adapter (for " + typeClass + ")", adapter);
-    Ember.assert("You tried to filter all records but your adapter does not implement `filter`", typeof adapter.filter === 'function');
     Ember.assert("You tried to filter all records but you have no filter (for " + typeClass + ")", filterClass);
     var filter = this.peekRecord(filterClass.modelName, filterId);
     var filterContent = this.restoreFilter(typeClass.modelName);
@@ -115,25 +114,20 @@ export default Ember.Mixin.create({
     @return {Promise} promise
   */
   _filterAll(adapter, filterId, typeClass, query_hash, options){
-    var $this = this;
     var modelName = typeClass.modelName;
-    var promise = adapter.filter(this, typeClass, filterId, query_hash, options);
-    var serializer = this.serializerFor(modelName);
-    var label = "DS: Handle Adapter#filter of " + typeClass;
     var filterModelName = this.filterFor(modelName).modelName;
-
-    promise = Promise.resolve(promise, label);
 
     this.updateStore(filterId, filterModelName, query_hash);
 
-    return promise.then(function(adapterPayload) {
-      return $this._adapterRun(function() {
-        let payload = adapter.handleFilterResponse(modelName, adapterPayload),
-          data = serializer._normalizeArray($this, modelName, payload);
-        //TODO Optimize
-        return $this.push(data);
-      });
-    }, null, "DS: Extract payload of filter " + typeClass);
+    var query = Ember.copy(options.queryParams, true) || {};
+    query['filter_id'] = filterId;
+    if(query_hash){
+      query['query_hash'] = query_hash;
+    }
+    if(options.query) {
+      Ember.merge(query, options.query);
+    }
+    return this.query(modelName, query);
   },
 
   /**

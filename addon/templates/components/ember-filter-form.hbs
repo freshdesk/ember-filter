@@ -1,4 +1,4 @@
-<form class="filter-form" {{action 'customSearch' type payload on='submit'}}>
+<form class="filter-form" {{action 'customSearch' on='submit'}}>
   {{#each-in visibleFilterOptions as |key value|}}
     {{#if value.componentTemplate}}
       {{component value.componentTemplate
