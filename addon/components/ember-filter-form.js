@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/ember-filter-form';
 const {
-  get,
   computed,
   isPresent,
   isEmpty
