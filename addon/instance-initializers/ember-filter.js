@@ -1,4 +1,3 @@
-import DS from 'ember-data';
 import StoreMixin from 'ember-filter/mixins/store';
 
 export function initialize({ application, container }) {
