@@ -1,6 +1,6 @@
 import StoreMixin from 'ember-filter/mixins/store';
 
-export function initialize({ application, container }) {
+export function initialize(application) {
   var store = application.lookup('service:store');
   store.reopen(StoreMixin);
 
