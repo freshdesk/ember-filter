@@ -13,9 +13,10 @@ export default Ember.Component.extend({
   visibleFilterOptions: computed('filter', function(){
     var $this=this;
     var normalizedQuery = this.get('filter.normalizedQuery');
+    var allFilterOptions = this.get('allFilterOptions');
     var elms = new Ember.Object();
     Object.keys(normalizedQuery).forEach(function(key){
-      if(normalizedQuery[key].value instanceof Ember.ArrayProxy || isPresent(normalizedQuery[key].value)){
+      if(allFilterOptions || normalizedQuery[key].value instanceof Ember.ArrayProxy || isPresent(normalizedQuery[key].value)){
         elms[key] = $this.filterOptionsFor(key);
       }
     });
