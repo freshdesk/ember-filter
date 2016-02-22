@@ -14,21 +14,10 @@
   {{/each-in}}
   <div>
     {{#if hasMoreElements}}
-      {{#bs-dropdown}}
-        {{#bs-dropdown-toggle}}
-          <i class="icon-ellipsis"></i>
-        {{/bs-dropdown-toggle}}
-        {{#bs-dropdown-menu}}
-          {{#each-in nonVisibleOptions as |key value|}}
-            <li>
-              <a href='#' {{action "showField" key}}> {{value.label}} </a>
-            </li>
-          {{/each-in}}
-        {{/bs-dropdown-menu}}
-      {{/bs-dropdown}}
+      {{component moreOptionTemplate nonVisibleOptions=nonVisibleOptions }}
     {{/if}}
   </div>
   <div class="filter-footer">
-    <button class="btn btn-default btn-sm" type="submit">{{t 'search'}}</button>
+    {{component searchButtonTemplate }}
   </div>
 </form>
