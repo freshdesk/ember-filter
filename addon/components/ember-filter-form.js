@@ -10,6 +10,11 @@ export default Ember.Component.extend({
   layout: layout,
   classNames: ['filter-form'],
 
+  moreOptionTemplate: 'ember-filter-more-options',
+
+  searchButtonTemplate: 'ember-filter-search-button',
+
+
   visibleFilterOptions: computed('filter', function(){
     var $this=this;
     var normalizedQuery = this.get('filter.normalizedQuery');
@@ -44,15 +49,16 @@ export default Ember.Component.extend({
     return this.get('filter.filterOptions.'+key);
   },
 
+  showField(key){
+    var visibleFilterOptions = this.get('visibleFilterOptions');
+    visibleFilterOptions[key] = this.filterOptionsFor(key);
+    this.set('visibleFilterOptions', visibleFilterOptions);
+    this.notifyPropertyChange('visibleFilterOptions');
+  },  
+
   actions: {
     customSearch: function(){
       this.sendAction('action');
-    },
-    showField(key){
-      var visibleFilterOptions = this.get('visibleFilterOptions');
-      visibleFilterOptions[key] = this.filterOptionsFor(key);
-      this.set('visibleFilterOptions', visibleFilterOptions);
-      this.notifyPropertyChange('visibleFilterOptions');
     }
   }
 });
