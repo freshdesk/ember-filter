@@ -43,6 +43,10 @@ export default Ember.Mixin.create({
     return this._filter(typeClass, filterId, options);
   },
 
+  filterPostFix(){
+    return Configuration.filterModelEndsWith;
+  },
+
   /**
     Returns a filter model class for a particular key. Used by
     methods that take a type key (like `filter`,
@@ -52,7 +56,7 @@ export default Ember.Mixin.create({
     @return {DS.Model}
   */
   filterFor(modelName){
-    var filter = Configuration.filterModelEndsWith;
+    var filter = this.filterPostFix();
     Ember.assert('Passing classes to store methods has been removed. Please pass a dasherized string instead of '+ Ember.inspect(modelName), typeof modelName === 'string');
     var factory = this.modelFactoryFor(modelName+filter);
     if (!factory) {

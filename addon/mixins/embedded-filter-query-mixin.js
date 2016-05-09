@@ -29,10 +29,12 @@ export default Ember.Mixin.create({
       Ember.assert("Embedded filter expects filterOptions property object (in " + this + ")", Ember.isPresent(filterOptions));
       Object.keys(filterOptions).forEach(function(key){
         let operator = filterOptions[key].operator,
-          value = $this.getValueFor(key);
+          value = $this.getValueFor(key),
+          rawValue = $this.getValueFor(key, false);
         normalizedHash[key] = {
           operator: operator,
-          value: value
+          value: value,
+          rawValue: rawValue
         };
       });
       return normalizedHash;
@@ -43,14 +45,21 @@ export default Ember.Mixin.create({
     return get(this,'filterOptions')[key].attribute || key;
   },
 
-  getValueFor: function(key){
+  getValueFor: function(key, normalizedValue=true){
     let attribute = this.filterAttribute(key);
-    let selectedVal = get(this,'query_hash').filterBy('condition',attribute);
+    let modifiedQueryHash = this.store.restoreFilter(this._internalModel.modelName.replace(this.store.filterPostFix(), ""))["query_hash"];
+    let hash = (modifiedQueryHash || []).length > 0 ? modifiedQueryHash : get(this,'query_hash');
+    let selectedVal = hash.filterBy('condition',attribute);
     let modifiedQuery = get(this, 'modifiedQuery');
     if(modifiedQuery){
       selectedVal = modifiedQuery.filterBy('condition',attribute);
     }
-    return Ember.isPresent(selectedVal) ? this.normalizedValue(selectedVal[0], key) : [];
+    if(normalizedValue){
+      return Ember.isPresent(selectedVal) ? this.normalizedValue(selectedVal[0], key) : [];
+    }
+    else{
+      return Ember.isPresent(selectedVal) ? selectedVal[0].value : [];
+    }
   },
 
   serializedQuery: function(){
@@ -60,6 +69,8 @@ export default Ember.Mixin.create({
     Object.keys(normalizedQuery).forEach(function(key){
       let value = $this.serializeValue(normalizedQuery[key]),
         condition = $this.filterAttribute(key);
+      // For promise values on page refresh.
+      value = value || normalizedQuery[key].rawValue;
       if(Ember.isPresent(value)) {
         serializedQuery.push({
           condition: condition,
@@ -74,6 +85,7 @@ export default Ember.Mixin.create({
   serializeValue: function(object){
     switch(object.operator) {
       case 'is_in':
+      case 'contains_any':
         return object.value.mapBy('id').join();
       default :
         return object.value;
@@ -84,6 +96,7 @@ export default Ember.Mixin.create({
     let value = object.value;
     switch(object.operator) {
       case 'is_in':
+      case 'contains_any':
         value = object.value.split(',');
         break;
       default :
