@@ -47,7 +47,7 @@ export default Ember.Mixin.create({
 
   getValueFor: function(key, normalizedValue=true){
     let attribute = this.filterAttribute(key);
-    let modifiedQueryHash = this.store.restoreFilter(this._internalModel.modelName.replace(this.store.filterPostFix(), ""))["query_hash"];
+    let modifiedQueryHash = (this.store.restoreFilter(this._internalModel.modelName.replace(this.store.filterPostFix(), "")) || {})["query_hash"];
     let hash = (modifiedQueryHash || []).length > 0 ? modifiedQueryHash : get(this,'query_hash');
     let selectedVal = hash.filterBy('condition',attribute);
     let modifiedQuery = get(this, 'modifiedQuery');
