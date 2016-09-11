@@ -16,26 +16,25 @@ export default Ember.Component.extend({
 
 
   visibleFilterOptions: computed('filter', function(){
-    var $this=this;
     var normalizedQuery = this.get('filter.normalizedQuery');
     var allFilterOptions = this.get('allFilterOptions');
     var elms = new Ember.Object();
-    Object.keys(normalizedQuery).forEach(function(key){
-      if(allFilterOptions || normalizedQuery[key].value instanceof Ember.ArrayProxy || isPresent(normalizedQuery[key].value)){
-        elms[key] = $this.filterOptionsFor(key);
+    Object.keys(normalizedQuery).forEach((key)=>{
+      var option = this.filterOptionsFor(key);
+      if(allFilterOptions || option.visible || normalizedQuery[key].value instanceof Ember.ArrayProxy || isPresent(normalizedQuery[key].value)){
+        elms[key] = option;
       }
     });
     return elms;
   }),
 
   nonVisibleOptions: computed('filter', 'visibleFilterOptions', function(){
-    var $this =this;
     var filterOptions = this.get('filter.filterOptions');
     var visibleFilterOptions = this.get('visibleFilterOptions');
     var elms = new Ember.Object();
-    Object.keys(filterOptions).forEach(function(key){
+    Object.keys(filterOptions).forEach((key)=>{
       if(isEmpty(visibleFilterOptions[key])){
-        elms[key] = $this.filterOptionsFor(key);
+        elms[key] = this.filterOptionsFor(key);
       }
     });
     return elms;
@@ -54,7 +53,7 @@ export default Ember.Component.extend({
     visibleFilterOptions[key] = this.filterOptionsFor(key);
     this.set('visibleFilterOptions', visibleFilterOptions);
     this.notifyPropertyChange('visibleFilterOptions');
-  },  
+  },
 
   actions: {
     customSearch: function(){

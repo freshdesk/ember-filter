@@ -15,10 +15,12 @@ If you need to filter the People, lets define the filter as PeopleFilter with fi
 #PeopleFilter.js
 
 #This can be fetched from server as async or constant.  For each FilterOption you can define custom `componentTemplate`
+# For each filter option we can define visible to force show even if there are no values.
+# TO show all filter options we can use allFIlterOptions-tru while rendering ember-filter-form
 # to have custome element component, which will get filter as filter, options as filterOptions an key as FilterOptionKey(status)
 filterOptions: computed(function(){
   return {
-    status: { operator: 'is_in', type: 'selectize', label: 'People Status' },
+    status: { operator: 'is_in', type: 'selectize', label: 'People Status', visible: true },
     dropdown: { operator: 'is', type: 'dropdown', label: 'Custom dropdown', choices: computed(function(){
       return [
           { id: 1, name: "Choice one"},
