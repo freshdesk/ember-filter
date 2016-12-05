@@ -10,9 +10,9 @@
       multiple=multiple}}
 {{else if dropdown}}
   <select onchange={{action 'selectValue'}} multiple={{multiple}}>
-  {{#each choices as |choice|}}
-    <option value={{choice.id}} >{{choice.name}}</option>
-  {{/each}}
+    {{#each choices as |choice|}}
+      <option value={{choice.id}} >{{choice.name}}</option>
+    {{/each}}
   </select>
 {{else if checkbox}}
   {{input type='checkbox' checked=value}}
