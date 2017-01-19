@@ -2,7 +2,15 @@ import Ember from 'ember';
 import Configuration from './../configuration';
 import DS from 'ember-data';
 const { PromiseArray } = DS;
-const { Promise } = Ember.RSVP;
+const {
+  RSVP: {
+    Promise
+  },
+  run: {
+    later
+  },
+  set
+} = Ember
 
 export default Ember.Mixin.create({
 
@@ -97,8 +105,11 @@ export default Ember.Mixin.create({
     var filterContent = this.restoreFilter(typeClass.modelName);
     if(filterContent && !!filterContent['query_hash'] && filterContent.id === filterId){
       queryHash = filterContent['query_hash'];
-      filter.set('modifiedQuery', queryHash);
-      filter.set('queryModified', true);
+
+      later(this, function(){
+        set(filter, 'modifiedQuery', queryHash);
+        set(filter, 'queryModified', true);
+      }, 1);
     }
     if(filter && filter.get('queryModified')){
       queryHash = filter.serializedQuery();
