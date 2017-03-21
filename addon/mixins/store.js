@@ -66,7 +66,7 @@ export default Ember.Mixin.create({
   filterFor(modelName){
     var filter = this.filterPostFix();
     Ember.assert('Passing classes to store methods has been removed. Please pass a dasherized string instead of '+ Ember.inspect(modelName), typeof modelName === 'string');
-    var factory = this.modelFactoryFor(modelName+filter);
+    var factory = this.modelFor(modelName+filter);
     if (!factory) {
       throw new Ember.Error("No filter was found for '" + modelName + "'");
     }
