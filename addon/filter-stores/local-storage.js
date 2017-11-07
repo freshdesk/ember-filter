@@ -1,8 +1,8 @@
 /* global localStorage */
-import Ember from 'ember';
-import BaseStore from './base';
+import $ from 'jquery';
 
-const { on } = Ember;
+import { on } from '@ember/object/evented';
+import BaseStore from './base';
 
 /**
   Filter store that persists data in the browser's `localStorage`.
@@ -89,7 +89,7 @@ export default BaseStore.extend({
   },
 
   _bindToStorageEvents() {
-    Ember.$(window).bind('storage', () => {
+    $(window).bind('storage', () => {
       let data = this.restore();
       this._lastData = data;
       this.trigger('filterDataUpdated', data);

@@ -1,12 +1,10 @@
-import Ember from 'ember';
+import ArrayProxy from '@ember/array/proxy';
+import Component from '@ember/component';
+import EmberObject, { computed } from '@ember/object';
+import { isEmpty, isPresent } from '@ember/utils';
 import layout from '../templates/components/ember-filter-form';
-const {
-  computed,
-  isPresent,
-  isEmpty
-} = Ember;
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout: layout,
   classNames: ['filter-form'],
 
@@ -18,10 +16,10 @@ export default Ember.Component.extend({
   visibleFilterOptions: computed('filter', function(){
     var normalizedQuery = this.get('filter.normalizedQuery');
     var allFilterOptions = this.get('allFilterOptions');
-    var elms = new Ember.Object();
+    var elms = new EmberObject();
     Object.keys(normalizedQuery).forEach((key)=>{
       var option = this.filterOptionsFor(key);
-      if(allFilterOptions || option.visible || normalizedQuery[key].value instanceof Ember.ArrayProxy || isPresent(normalizedQuery[key].value)){
+      if(allFilterOptions || option.visible || normalizedQuery[key].value instanceof ArrayProxy || isPresent(normalizedQuery[key].value)){
         elms[key] = option;
       }
     });
@@ -31,7 +29,7 @@ export default Ember.Component.extend({
   nonVisibleOptions: computed('filter', 'visibleFilterOptions', function(){
     var filterOptions = this.get('filter.filterOptions');
     var visibleFilterOptions = this.get('visibleFilterOptions');
-    var elms = new Ember.Object();
+    var elms = new EmberObject();
     Object.keys(filterOptions).forEach((key)=>{
       if(isEmpty(visibleFilterOptions[key])){
         elms[key] = this.filterOptionsFor(key);

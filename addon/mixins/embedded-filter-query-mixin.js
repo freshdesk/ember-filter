@@ -1,7 +1,9 @@
-import Ember from 'ember';
-const { computed, get, set } = Ember;
+import { isPresent } from '@ember/utils';
+import { assert } from '@ember/debug';
+import Mixin from '@ember/object/mixin';
+import EmberObject, { set, get, computed } from '@ember/object';
 
-export default Ember.Mixin.create({
+export default Mixin.create({
   //To check the status of filter
   queryModified: computed('modifiedQuery', function(){
     return !!this.get('modifiedQuery');
@@ -24,9 +26,9 @@ export default Ember.Mixin.create({
   normalizedQuery: computed('query_hash', {
     get(){
       let $this = this,
-        normalizedHash = Ember.Object.create({}),
+        normalizedHash = EmberObject.create({}),
         filterOptions = get(this, 'filterOptions');
-      Ember.assert("Embedded filter expects filterOptions property object (in " + this + ")", Ember.isPresent(filterOptions));
+      assert("Embedded filter expects filterOptions property object (in " + this + ")", isPresent(filterOptions));
       Object.keys(filterOptions).forEach(function(key){
         let operator = filterOptions[key].operator,
           value = $this.getValueFor(key),
@@ -55,10 +57,10 @@ export default Ember.Mixin.create({
       selectedVal = modifiedQuery.filterBy('condition',attribute);
     }
     if(normalizedValue){
-      return Ember.isPresent(selectedVal) ? this.normalizedValue(selectedVal[0], key) : [];
+      return isPresent(selectedVal) ? this.normalizedValue(selectedVal[0], key) : [];
     }
     else{
-      return Ember.isPresent(selectedVal) ? selectedVal[0].value : [];
+      return isPresent(selectedVal) ? selectedVal[0].value : [];
     }
   },
 
@@ -71,7 +73,7 @@ export default Ember.Mixin.create({
         condition = $this.filterAttribute(key);
       // For promise values on page refresh.
       value = value || normalizedQuery[key].rawValue;
-      if(Ember.isPresent(value)) {
+      if(isPresent(value)) {
         serializedQuery.push({
           condition: condition,
           operator: normalizedQuery[key].operator,

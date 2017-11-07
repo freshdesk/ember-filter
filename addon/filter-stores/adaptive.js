@@ -1,10 +1,10 @@
 /* global localStorage */
-import Ember from 'ember';
+import { computed } from '@ember/object';
+
+import { on } from '@ember/object/evented';
 import Base from 'ember-filter/filter-stores/base';
 import LocalStorage from 'ember-filter/filter-stores/local-storage';
 import Cookie from 'ember-filter/filter-stores/cookie';
-
-const { computed, on } = Ember;
 
 const LOCAL_STORAGE_TEST_KEY = '_ember_filter_test_key';
 

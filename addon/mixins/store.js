@@ -1,18 +1,16 @@
-import Ember from 'ember';
+import { merge } from '@ember/polyfills';
+import { copy } from '@ember/object/internals';
+import EmberError from '@ember/error';
+import { assert, inspect } from '@ember/debug';
+import Mixin from '@ember/object/mixin';
+import { Promise } from 'rsvp';
+import { later } from '@ember/runloop';
+import { set } from '@ember/object';
 import Configuration from './../configuration';
 import DS from 'ember-data';
 const { PromiseArray } = DS;
-const {
-  RSVP: {
-    Promise
-  },
-  run: {
-    later
-  },
-  set
-} = Ember
 
-export default Ember.Mixin.create({
+export default Mixin.create({
 
 
   /**
@@ -45,7 +43,7 @@ export default Ember.Mixin.create({
     @return {DS.AdapterPopulatedRecordArray}
   */
   filter(modelName, filterId, options) {
-    Ember.assert('Passing classes to store methods has been removed. Please pass a dasherized string instead of '+ Ember.inspect(modelName), typeof modelName === 'string');
+    assert('Passing classes to store methods has been removed. Please pass a dasherized string instead of '+ inspect(modelName), typeof modelName === 'string');
     var typeClass = this.modelFor(modelName);
 
     return this._filter(typeClass, filterId, options);
@@ -65,10 +63,10 @@ export default Ember.Mixin.create({
   */
   filterFor(modelName){
     var filter = this.filterPostFix();
-    Ember.assert('Passing classes to store methods has been removed. Please pass a dasherized string instead of '+ Ember.inspect(modelName), typeof modelName === 'string');
+    assert('Passing classes to store methods has been removed. Please pass a dasherized string instead of '+ inspect(modelName), typeof modelName === 'string');
     var factory = this.modelFor(modelName+filter);
     if (!factory) {
-      throw new Ember.Error("No filter was found for '" + modelName + "'");
+      throw new EmberError("No filter was found for '" + modelName + "'");
     }
 
     factory.modelName = factory.modelName || DS.normalizeModelName(modelName+filter);
@@ -99,8 +97,8 @@ export default Ember.Mixin.create({
     var adapter = this.adapterFor(typeClass.modelName);
     var filterClass = this.filterFor(typeClass.modelName);
     var queryHash = null;
-    Ember.assert("You tried to filter all records but you have no adapter (for " + typeClass + ")", adapter);
-    Ember.assert("You tried to filter all records but you have no filter (for " + typeClass + ")", filterClass);
+    assert("You tried to filter all records but you have no adapter (for " + typeClass + ")", adapter);
+    assert("You tried to filter all records but you have no filter (for " + typeClass + ")", filterClass);
     var filter = this.peekRecord(filterClass.modelName, filterId);
     var filterContent = this.restoreFilter(typeClass.modelName);
     if(filterContent && !!filterContent['query_hash'] && filterContent.id === filterId){
@@ -134,13 +132,13 @@ export default Ember.Mixin.create({
 
     this.updateStore(filterId, filterModelName, query_hash);
 
-    var query = Ember.copy(options.queryParams, true) || {};
+    var query = copy(options.queryParams, true) || {};
     query['filter_id'] = filterId;
     if(query_hash){
       query['query_hash'] = query_hash;
     }
     if(options.query) {
-      Ember.merge(query, options.query);
+      merge(query, options.query);
     }
     return this.query(modelName, query);
   },

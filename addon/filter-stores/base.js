@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import Evented from '@ember/object/evented';
+import EmberObject from '@ember/object';
 
 /**
   The base class for all filter stores. __This serves as a starting point for
@@ -13,7 +14,7 @@ import Ember from 'ember';
   @uses Ember.Evented
   @public
 */
-export default Ember.Object.extend(Ember.Evented, {
+export default EmberObject.extend(Evented, {
 
   /**
     Persists the `data`. This replaces all currently stored data.

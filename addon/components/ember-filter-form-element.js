@@ -1,8 +1,10 @@
+import { camelize } from '@ember/string';
+import Component from '@ember/component';
+import { set, get, computed } from '@ember/object';
 import Ember from 'ember';
 import layout from '../templates/components/ember-filter-form-element';
-const { computed, get, set } = Ember;
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout: layout,
   classNames: ['filter-form-field'],
 
@@ -45,7 +47,7 @@ export default Ember.Component.extend({
     }
   }),
   contentMethod: function(key){
-    return Ember.String.pluralize(Ember.String.camelize(key));
+    return Ember.String.pluralize(camelize(key));
   },
   minDate: computed(function(){
     return new Date();

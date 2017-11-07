@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { typeOf } from '@ember/utils';
+import EmberObject from '@ember/object';
 
 const DEFAULTS = {
   filterUrlNamespace:      'filters',
@@ -51,9 +52,9 @@ export default {
   filterModelEndsWith: DEFAULTS.filterModelEndsWith,
 
   load(config) {
-    const wrappedConfig = Ember.Object.create(config);
+    const wrappedConfig = EmberObject.create(config);
     for (let property in this) {
-      if (this.hasOwnProperty(property) && Ember.typeOf(this[property]) !== 'function') {
+      if (this.hasOwnProperty(property) && typeOf(this[property]) !== 'function') {
         this[property] = wrappedConfig.getWithDefault(property, DEFAULTS[property]);
       }
     }

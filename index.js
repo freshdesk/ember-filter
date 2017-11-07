@@ -1,9 +1,6 @@
-/* jshint node: true */
+/* eslint-env node */
 'use strict';
 
 module.exports = {
-  name: 'ember-filter',
-  isDevelopingAddon: function() {
-    return false;
-  }
+  name: 'ember-filter'
 };

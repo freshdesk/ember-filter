@@ -1,9 +1,9 @@
+import { cancel, later } from '@ember/runloop';
+import { isEmpty, typeOf } from '@ember/utils';
+import { on } from '@ember/object/evented';
+import { computed } from '@ember/object';
 import Ember from 'ember';
 import BaseStore from './base';
-
-const { computed } = Ember;
-
-const { on } = Ember;
 
 /**
   Filter store that persists data in a cookie.
@@ -106,7 +106,7 @@ export default BaseStore.extend({
   */
   restore() {
     let data = this._read(this.cookieName);
-    if (Ember.isEmpty(data)) {
+    if (isEmpty(data)) {
       return {};
     } else {
       return JSON.parse(data);
@@ -146,15 +146,15 @@ export default BaseStore.extend({
 
   _calculateExpirationTime() {
     let cachedExpirationTime = this._read(`${this.cookieName}:expiration_time`);
-    cachedExpirationTime     = !!cachedExpirationTime ? new Date().getTime() + cachedExpirationTime * 1000 : null;
-    return !!this.cookieExpirationTime ? new Date().getTime() + this.cookieExpirationTime * 1000 : cachedExpirationTime;
+    cachedExpirationTime     = cachedExpirationTime ? new Date().getTime() + cachedExpirationTime * 1000 : null;
+    return this.cookieExpirationTime ? new Date().getTime() + this.cookieExpirationTime * 1000 : cachedExpirationTime;
   },
 
   _write(value, expiration) {
     let path        = '; path=/';
-    let domain      = Ember.isEmpty(this.cookieDomain) ? '' : `; domain=${this.cookieDomain}`;
-    let expires     = Ember.isEmpty(expiration) ? '' : `; expires=${new Date(expiration).toUTCString()}`;
-    let secure      = !!this._secureCookies ? ';secure' : '';
+    let domain      = isEmpty(this.cookieDomain) ? '' : `; domain=${this.cookieDomain}`;
+    let expires     = isEmpty(expiration) ? '' : `; expires=${new Date(expiration).toUTCString()}`;
+    let secure      = this._secureCookies ? ';secure' : '';
     document.cookie = `${this.cookieName}=${encodeURIComponent(value)}${domain}${path}${expires}${secure}`;
     if (expiration !== null) {
       let cachedExpirationTime = this._read(`${this.cookieName}:expiration_time`);
@@ -167,15 +167,15 @@ export default BaseStore.extend({
     this._lastData = data;
     this.trigger('filterDataUpdated', data);
     if (!Ember.testing) {
-      Ember.run.cancel(this._syncDataTimeout);
-      this._syncDataTimeout = Ember.run.later(this, this._syncData, 500);
+      cancel(this._syncDataTimeout);
+      this._syncDataTimeout = later(this, this._syncData, 500);
     }
   },
 
   _renew() {
     let data = this.restore();
-    if (!Ember.isEmpty(data) && data !== {}) {
-      data           = Ember.typeOf(data) === 'string' ? data : JSON.stringify(data || {});
+    if (!isEmpty(data) && data !== {}) {
+      data           = typeOf(data) === 'string' ? data : JSON.stringify(data || {});
       let expiration = this._calculateExpirationTime();
       this._write(data, expiration);
     }
@@ -186,8 +186,8 @@ export default BaseStore.extend({
       this._renew();
     }
     if (!Ember.testing) {
-      Ember.run.cancel(this._renewExpirationTimeout);
-      this._renewExpirationTimeout = Ember.run.later(this, this._renewExpiration, 60000);
+      cancel(this._renewExpirationTimeout);
+      this._renewExpirationTimeout = later(this, this._renewExpiration, 60000);
     }
   }
 });
