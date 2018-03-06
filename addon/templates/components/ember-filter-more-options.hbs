@@ -1,12 +1,12 @@
-{{#bs-dropdown}}
-  {{#bs-dropdown-toggle}}
+{{#bs-dropdown as |dd|}}
+  {{#dd.toggle}}
     <i class="icon-ellipsis"></i>
-  {{/bs-dropdown-toggle}}
-  {{#bs-dropdown-menu}}
+  {{/dd.toggle}}
+  {{#dd.menu}}
     {{#each-in nonVisibleOptions as |key value|}}
       <li>
         <a href='#' {{action "showField" key}}> {{value.label}} </a>
       </li>
     {{/each-in}}
-  {{/bs-dropdown-menu}}
+  {{/dd.menu}}
 {{/bs-dropdown}}
