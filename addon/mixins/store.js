@@ -1,5 +1,5 @@
 import { merge } from '@ember/polyfills';
-import { copy } from '@ember/object/internals';
+import { copy } from 'ember-copy';
 import EmberError from '@ember/error';
 import { assert, inspect } from '@ember/debug';
 import Mixin from '@ember/object/mixin';
