@@ -19,11 +19,11 @@
     "postinstall": "bower install"
   },
   "dependencies": {
-    "bootstrap": "~3.3.7",
+    "bootstrap": "^3.3.7",
     "ember-cli-babel": "^6.7.1",
     "ember-cli-htmlbars": "^1.1.1",
     "ember-data": "^2.16.3",
-    "ember-bootstrap": "1.0.0-rc.2"
+    "ember-bootstrap": "2.6.1"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
